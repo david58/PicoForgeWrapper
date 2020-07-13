@@ -6,7 +6,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,7 +34,7 @@ public class Main {
         boolean result = (boolean)installer.getDeclaredMethod("ensure").invoke(
                 installer.getDeclaredConstructor(File.class).newInstance(librariesDirFile));
         if (!result) {
-            LogManager.getLogger().error("Could not install Forge");
+            System.err.println("Could not install Forge");
             return;
         }
 
@@ -58,7 +57,7 @@ public class Main {
             try {
                 return (ClassLoader) ClassLoader.class.getDeclaredMethod("getPlatformClassLoader").invoke(null);
             } catch (Exception e) {
-                System.out.println("No platform classloader: " + System.getProperty("java.version"));
+                System.err.println("No platform classloader: " + System.getProperty("java.version"));
             }
         }
         return null;
