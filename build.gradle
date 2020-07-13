@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group 'net.cavoj'
+version '1.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "forge"
+        url = "https://files.minecraftforge.net/maven/"
+    }
+}
+
+dependencies {
+    implementation "cpw.mods:modlauncher:+"
+    implementation "net.minecraftforge:forge:+:installer"
+}
