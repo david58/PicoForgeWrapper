@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'net.cavoj'
-version '1.3'
+version '1.4'
 
 repositories {
     mavenCentral()
@@ -15,25 +15,13 @@ repositories {
 }
 
 dependencies {
-    implementation "cpw.mods:modlauncher:5.1.0"
-    implementation "net.minecraftforge:forge:1.16.1-32.0.63:installer"
+    implementation "net.minecraftforge:forge:1.17.1-37.0.104:installer"
 }
 
 publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            url = "https://mvn.cavoj.net/"
-            credentials {
-                username mavenUser
-                password mavenPassword
-            }
-
         }
     }
 }

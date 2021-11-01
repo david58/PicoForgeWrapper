@@ -3,6 +3,7 @@ package net.cavoj.picoforgewrapper;
 import net.minecraftforge.installer.actions.ProgressCallback;
 import net.minecraftforge.installer.json.Artifact;
 import net.minecraftforge.installer.json.Install;
+import net.minecraftforge.installer.json.InstallV1;
 import net.minecraftforge.installer.json.Util;
 
 import java.io.File;
@@ -18,6 +19,8 @@ import java.util.Map;
 public class Installer {
     private final File librariesDir;
     private final File clientTarget;
+    private final File root;
+    private final File installerFile;
 
     public static File getClientJarFile() {
         try {
@@ -28,20 +31,22 @@ public class Installer {
         }
     }
 
-    public Installer(File librariesDir) {
+    public Installer(File librariesDir, File installerFile) {
         this.librariesDir = librariesDir;
         this.clientTarget = getClientJarFile();
+        this.root = librariesDir.getParentFile();
+        this.installerFile = installerFile;
     }
 
     public boolean ensure() {
-        Install install = Util.loadInstallProfile();
+        InstallV1 install = Util.loadInstallProfile();
         if (checkLibraries(install)) {
             System.err.println("PicoForgeWrapper: Found cached Forge artifacts, continuing");
             return true;
-        };
+        }
         System.err.println("PicoForgeWrapper: Some artifacts were missing, running Forge installer");
         ProgressCallback monitor = ProgressCallback.withOutputs(System.err);
-        return new PicoClientInstall(install, monitor).runPico(this.librariesDir, this.clientTarget);
+        return new PicoClientInstall(install, monitor).runPico(this.librariesDir, this.clientTarget, this.root, this.installerFile);
     }
 
     private boolean shouldVerifyHash() {
@@ -53,7 +58,7 @@ public class Installer {
         MessageDigest digest = MessageDigest.getInstance("SHA1");
 
         byte[] buf = new byte[1024];
-        int n = 0;
+        int n;
 
         while ((n = fis.read(buf)) != -1) {
             digest.update(buf, 0, n);
@@ -96,7 +101,6 @@ public class Installer {
         for (Install.Processor proc : install.getProcessors("client")) {
             Map<String, String> outputs = proc.getOutputs();
             for (String key : outputs.keySet()) {
-                String value = outputs.get(key);
                 if (key.charAt(0) == '{' && key.charAt(key.length() - 1) == '}')
                     key = data.get(key.substring(1, key.length() - 1));
                 else if (key.charAt(0) == '[' && key.charAt(key.length() - 1) == ']')
