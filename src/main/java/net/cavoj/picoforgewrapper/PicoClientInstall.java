@@ -12,6 +12,6 @@ public class PicoClientInstall extends ClientInstall {
     }
 
     public boolean runPico(File librariesDir, File clientTarget, File root, File installer) {
-        return this.processors.process(librariesDir, clientTarget, root, installer);
+        return !this.processors.process(librariesDir, clientTarget, root, installer).isEmpty();
     }
 }
